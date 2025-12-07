@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notes API - Управление заметками</title>
+    <link rel="stylesheet" href="/styles.css">
+</head>
+
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <h1 class="logo">📝 Notes API</h1>
+                <div class="status-badge" id="statusBadge">
+                    <span class="status-dot"></span>
+                    API активен
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Create/Edit Form -->
+            <div class="card form-card">
+                <h2 class="card-title" id="formTitle">Создать новую заметку</h2>
+                <form id="postForm">
+                    <input type="hidden" id="editingId">
+
+                    <div class="form-group">
+                        <label for="title">Заголовок</label>
+                        <input type="text" id="title" placeholder="Введите заголовок заметки..." required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="content">Содержание</label>
+                        <textarea id="content" rows="4" placeholder="Введите текст заметки..." required></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="userId">User ID</label>
+                        <input type="number" id="userId" value="1" min="1" required>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary" id="submitBtn">
+                            <span>➕</span> Создать заметку
+                        </button>
+                        <button type="button" class="btn btn-secondary" id="cancelBtn" style="display: none;">
+                            <span>✖</span> Отмена
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Posts List -->
+            <div class="card posts-card">
+                <div class="card-header">
+                    <h2 class="card-title">Все заметки</h2>
+                    <button class="btn btn-refresh" id="refreshBtn">
+                        <span>🔄</span> Обновить
+                    </button>
+                </div>
+
+                <div id="postsContainer">
+                    <div class="loading">Загрузка...</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Toast Notification -->
+        <div class="toast" id="toast">
+            <span class="toast-message" id="toastMessage"></span>
+        </div>
+    </div>
+
+    <script src="/script.js"></script>
+</body>
+
+</html>
