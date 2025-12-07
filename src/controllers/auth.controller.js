@@ -1,5 +1,6 @@
 const jwt = require('jsonwebtoken');
 const authModel = require('../models/auth.model');
+const { addEmailJob } = require('../services/queue.service');
 
 // POST /auth/register - Register new user
 const register = async (req, res) => {
@@ -32,6 +33,13 @@ const register = async (req, res) => {
                 message: result.error
             });
         }
+
+        // Add welcome email job to queue
+        addEmailJob({
+            email: result.email,
+            name: result.name,
+            type: 'welcome'
+        });
 
         res.status(201).json({
             success: true,
