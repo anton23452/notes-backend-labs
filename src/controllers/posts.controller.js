@@ -54,7 +54,12 @@ const createPost = (req, res) => {
             });
         }
 
-        const newPost = postsModel.createPost({ title, content, userId });
+        const newPost = postsModel.createPost({
+            title,
+            content,
+            userId,
+            authorId: req.user.id
+        });
 
         res.status(201).json({
             success: true,
@@ -82,14 +87,22 @@ const updatePost = (req, res) => {
             });
         }
 
-        const updatedPost = postsModel.updatePost(id, { title, content, userId });
-
-        if (!updatedPost) {
+        const existingPost = postsModel.getPostById(id);
+        if (!existingPost) {
             return res.status(404).json({
                 success: false,
                 message: 'Пост не найден'
             });
         }
+
+        if (req.checkOwnership && existingPost.authorId !== req.user.id) {
+            return res.status(403).json({
+                success: false,
+                message: 'Вы можете редактировать только свои посты'
+            });
+        }
+
+        const updatedPost = postsModel.updatePost(id, { title, content, userId });
 
         res.status(200).json({
             success: true,
@@ -107,14 +120,23 @@ const updatePost = (req, res) => {
 const deletePost = (req, res) => {
     try {
         const { id } = req.params;
-        const deleted = postsModel.deletePost(id);
 
-        if (!deleted) {
+        const existingPost = postsModel.getPostById(id);
+        if (!existingPost) {
             return res.status(404).json({
                 success: false,
                 message: 'Пост не найден'
             });
         }
+
+        if (req.checkOwnership && existingPost.authorId !== req.user.id) {
+            return res.status(403).json({
+                success: false,
+                message: 'Вы можете удалять только свои посты'
+            });
+        }
+
+        const deleted = postsModel.deletePost(id);
 
         res.status(200).json({
             success: true,

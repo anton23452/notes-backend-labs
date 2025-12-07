@@ -4,13 +4,15 @@ let posts = [
         id: 1,
         title: 'Первая заметка',
         content: 'Это тестовая заметка для демонстрации API',
-        userId: 1
+        userId: 1,
+        authorId: 1
     },
     {
         id: 2,
         title: 'Вторая заметка',
         content: 'Еще одна заметка в системе',
-        userId: 1
+        userId: 1,
+        authorId: 2
     }
 ];
 
@@ -32,7 +34,8 @@ const createPost = (postData) => {
         id: nextId++,
         title: postData.title,
         content: postData.content,
-        userId: postData.userId
+        userId: postData.userId,
+        authorId: postData.authorId
     };
     posts.push(newPost);
     return newPost;
@@ -49,7 +52,8 @@ const updatePost = (id, postData) => {
         id: parseInt(id),
         title: postData.title,
         content: postData.content,
-        userId: postData.userId
+        userId: postData.userId,
+        authorId: posts[index].authorId
     };
 
     posts[index] = updatedPost;

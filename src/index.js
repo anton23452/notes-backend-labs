@@ -1,6 +1,13 @@
+require('dotenv').config();
 const express = require('express');
 const path = require('path');
+const swaggerUi = require('swagger-ui-express');
+const YAML = require('yamljs');
 const postsRoutes = require('./routes/posts.routes');
+const authRoutes = require('./routes/auth.routes');
+
+// Load Swagger document
+const swaggerDocument = YAML.load(path.join(__dirname, '../swagger.yaml'));
 
 const app = express();
 const PORT = 3000;
@@ -11,20 +18,28 @@ app.use(express.json());
 // Раздача статических файлов (HTML, CSS, JS)
 app.use(express.static(path.join(__dirname, '../public')));
 
+// Swagger API Documentation
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+
 // API info route
 app.get('/api', (req, res) => {
     res.json({
         message: 'Notes Backend API',
         version: '1.0.0',
         endpoints: {
+            auth: '/auth',
             posts: '/posts',
-            web_interface: '/'
+            web_interface: '/',
+            api_documentation: '/api-docs'
         }
     });
 });
 
 // Подключение роутов для постов
 app.use('/posts', postsRoutes);
+
+// Подключение роутов для аутентификации
+app.use('/auth', authRoutes);
 
 // Обработка несуществующих маршрутов
 app.use((req, res) => {
